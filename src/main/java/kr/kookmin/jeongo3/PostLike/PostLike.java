@@ -16,7 +16,7 @@ public class PostLike {
     @Id
     @GeneratedValue(strategy= GenerationType.UUID)
     @Column(name = "POSTLIKE_ID")
-    private UUID uuid;
+    private String id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "USER_ID")

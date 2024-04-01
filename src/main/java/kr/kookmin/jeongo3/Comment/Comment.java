@@ -18,7 +18,7 @@ public class Comment {
     @Id
     @GeneratedValue(strategy=GenerationType.UUID)
     @Column(name = "COMMENT_ID")
-    private UUID uuid;
+    private String id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "POST_ID")

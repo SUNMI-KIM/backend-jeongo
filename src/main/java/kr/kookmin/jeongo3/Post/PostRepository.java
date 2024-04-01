@@ -1,15 +1,15 @@
 package kr.kookmin.jeongo3.Post;
 
-import org.springframework.data.domain.Page;
+import kr.kookmin.jeongo3.Post.Dto.PostAllMapping;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import org.springframework.data.domain.Pageable;
+
+import java.util.List;
 
 @Repository
 public interface PostRepository extends JpaRepository<Post, String> {
 
-    Page<Post> findAllByPostTypeOrderByTimeDesc(PostType postType, Pageable pageable);
+    List<PostAllMapping> findAllByPostTypeOrderByTime(PostType postType);
 
 }

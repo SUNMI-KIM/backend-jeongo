@@ -1,12 +1,13 @@
 package kr.kookmin.jeongo3.Post;
 
+import kr.kookmin.jeongo3.Post.Dto.PostAllMapping;
 import kr.kookmin.jeongo3.Post.Dto.RequestPostDto;
+import kr.kookmin.jeongo3.Post.Dto.ResponsePostDto;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -27,19 +28,19 @@ public class PostController {
     }
 
     @PatchMapping("/post")
-    public String postModify(@RequestParam String id, @RequestBody RequestPostDto requestPost, Authentication authentication) {
-        postService.updatePost(id, requestPost, authentication.getName());
+    public String postModify(@RequestBody RequestPostDto requestPost, Authentication authentication) {
+        postService.updatePost(requestPost, authentication.getName());
         return "수정";
     }
 
     @GetMapping("/post")
-    public Post postDetails(@RequestParam String id) {
+    public ResponsePostDto postDetails(@RequestParam String id) {
         return postService.findPost(id);
     }
 
     @GetMapping("/posts")
-    public Page<Post> postList(@RequestParam PostType postType, @PageableDefault(size=10) Pageable pageable) {
-        return postService.findAllPost(postType, pageable);
+    public List<PostAllMapping> postList(@RequestParam PostType postType) {
+        return postService.findAllPost(postType);
     }
 
 }

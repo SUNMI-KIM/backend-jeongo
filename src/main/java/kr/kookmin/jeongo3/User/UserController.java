@@ -1,7 +1,10 @@
 package kr.kookmin.jeongo3.User;
 
 import kr.kookmin.jeongo3.Security.TokenDto;
+import kr.kookmin.jeongo3.User.Dto.RequestUserDto;
+import kr.kookmin.jeongo3.User.Dto.ResponseUserDto;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -9,13 +12,14 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
+@Slf4j
 public class UserController {
 
     private final UserService userService;
 
     @PostMapping("/user")
-    public String userRegister(@RequestBody User user) {
-        userService.saveUser(user);
+    public String userRegister(@RequestBody RequestUserDto requestUserDto) {
+        userService.saveUser(requestUserDto);
         return "저장되었습니다";
     }
 
@@ -25,7 +29,7 @@ public class UserController {
     }
 
     @GetMapping("/user")
-    public User userDetails(Authentication authentication) {
+    public ResponseUserDto userDetails(Authentication authentication) {
         return userService.findByIdUser(authentication.getName());
     }
 

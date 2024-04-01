@@ -7,6 +7,7 @@ import lombok.Getter;
 @Getter
 public class RequestPostDto {
 
+    private String id;
     private String title;
     private String content;
     private String image;
@@ -14,11 +15,11 @@ public class RequestPostDto {
 
     public Post toEntity() {
         return Post.builder()
+                .id(id)
                 .title(title)
                 .content(content)
                 .image(image)
                 .postType(postType)
                 .build();
     }
-
 }

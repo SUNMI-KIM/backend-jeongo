@@ -1,13 +1,16 @@
 package kr.kookmin.jeongo3.User;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
 
 @Getter
 @Setter
 @Entity
+@NoArgsConstructor
 public class User {
 
     @Id
@@ -58,4 +61,29 @@ public class User {
     @Column
     @ColumnDefault("0")
     private int point;
+
+    @Builder
+    public User(UserRole userRole,
+                String name,
+                String email,
+                String gender,
+                int age,
+                String loginId,
+                String password,
+                String phoneNum,
+                String univ,
+                String department,
+                String image) {
+        this.userRole = userRole;
+        this.name = name;
+        this.email = email;
+        this.gender = gender;
+        this.age = age;
+        this.loginId = loginId;
+        this.password = password;
+        this.phoneNum = phoneNum;
+        this.univ = univ;
+        this.department = department;
+        this.image = image;
+    }
 }

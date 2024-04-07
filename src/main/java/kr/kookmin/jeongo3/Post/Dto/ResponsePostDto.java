@@ -8,11 +8,13 @@ import kr.kookmin.jeongo3.Post.PostType;
 import kr.kookmin.jeongo3.User.Dto.ResponseUserDto;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Getter
+@Setter
 public class ResponsePostDto {
 
     private String postId;
@@ -21,6 +23,7 @@ public class ResponsePostDto {
     private String email;
     private String title;
     private String content;
+    private boolean like;
     private int likeNumber;
     private int views;
     private int commentNumber;
@@ -34,7 +37,6 @@ public class ResponsePostDto {
         this.email = post.getUser().getEmail();
         this.title = post.getTitle();
         this.content = post.getContent();
-        this.likeNumber = post.getLikeNumber();
         this.views = post.getViews();
         this.commentNumber = post.getComments().size();
         this.image = post.getImage();

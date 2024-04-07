@@ -37,9 +37,6 @@ public class Post {
     @Column(length = 1000)
     private String content;
 
-    @Column
-    private int likeNumber;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "USER_ID")
     private User user;

@@ -36,7 +36,6 @@ public class RequestUserDto {
                 .gender(gender)
                 .age(age)
                 .loginId(loginId)
-                .password(password)
                 .phoneNum(phoneNum)
                 .univ(univ)
                 .department(department)

@@ -2,6 +2,7 @@ package kr.kookmin.jeongo3.User;
 
 import kr.kookmin.jeongo3.Security.TokenDto;
 import kr.kookmin.jeongo3.User.Dto.RequestUserDto;
+import kr.kookmin.jeongo3.User.Dto.RequestUserUpdateDto;
 import kr.kookmin.jeongo3.User.Dto.ResponseUserDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -41,6 +42,12 @@ public class UserController {
     @PatchMapping("/user/report")
     public int userReport(@RequestParam String id) {
         return userService.reportUser(id);
+    }
+
+    @PutMapping("/user")
+    public String userUpdate(Authentication authentication, @RequestBody RequestUserUpdateDto requestUserUpdateDto) {
+        userService.updateUser(authentication.getName(), requestUserUpdateDto);
+        return "수정";
     }
 
 }

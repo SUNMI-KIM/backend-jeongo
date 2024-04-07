@@ -1,9 +1,9 @@
 package kr.kookmin.jeongo3.Post.Dto;
 
-import lombok.Getter;
+import org.springframework.beans.factory.annotation.Value;
 
+public interface PostMapping {
 
-public interface PostAllMapping {
     String getId();
     String getTitle();
     String getContent();

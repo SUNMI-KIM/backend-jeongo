@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-@Slf4j
 public class CommentService {
 
     private final CommentRepository commentRepository;
@@ -21,5 +20,13 @@ public class CommentService {
         comment.setPost(postRepository.findById(requestCommentDto.getPostId()).orElseThrow());
         comment.setUser(userRepository.findById(userId).orElseThrow());
         commentRepository.save(comment);
+    }
+
+    public void deleteComment(String commentId, String userId) {
+        Comment comment = commentRepository.findById(commentId).orElseThrow(); // 커스텀 예외처리
+        if (comment.getUser().getId() != userId) {
+            throw new RuntimeException(); // 니가 쓴거 아니잖아 에러
+        }
+        commentRepository.delete(comment);
     }
 }

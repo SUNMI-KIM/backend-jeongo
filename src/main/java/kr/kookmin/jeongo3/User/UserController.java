@@ -1,11 +1,14 @@
 package kr.kookmin.jeongo3.User;
 
+import kr.kookmin.jeongo3.Response;
 import kr.kookmin.jeongo3.Security.TokenDto;
 import kr.kookmin.jeongo3.User.Dto.RequestUserDto;
 import kr.kookmin.jeongo3.User.Dto.RequestUserUpdateDto;
 import kr.kookmin.jeongo3.User.Dto.ResponseUserDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,35 +22,38 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping("/user")
-    public String userRegister(@RequestBody RequestUserDto requestUserDto) {
-        userService.saveUser(requestUserDto);
-        return "저장되었습니다";
+    public ResponseEntity<Response> userRegister(@RequestBody RequestUserDto requestUserDto) {
+        Response response = userService.saveUser(requestUserDto);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     @GetMapping("/login")
-    public TokenDto userLogin(@RequestParam String loginId, @RequestParam String password) {
-        return userService.loginUser(loginId, password);
+    public ResponseEntity<Response> userLogin(@RequestParam String loginId, @RequestParam String password) {
+        Response response = userService.loginUser(loginId, password);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     @GetMapping("/user")
-    public ResponseUserDto userDetails(Authentication authentication) {
-        return userService.findByIdUser(authentication.getName());
+    public ResponseEntity<Response> userDetails(Authentication authentication) {
+        Response response = userService.findByIdUser(authentication.getName());
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     @GetMapping("/users")
-    public List<User> userList() {
+    public List<User> userList() { // 얘는 디비 보는 용도
         return userService.findAllUser();
     }
 
     @PatchMapping("/user/report")
-    public int userReport(@RequestParam String id) {
-        return userService.reportUser(id);
+    public ResponseEntity<Response> userReport(@RequestParam String id) {
+        Response response = userService.reportUser(id);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     @PutMapping("/user")
-    public String userUpdate(Authentication authentication, @RequestBody RequestUserUpdateDto requestUserUpdateDto) {
-        userService.updateUser(authentication.getName(), requestUserUpdateDto);
-        return "수정";
+    public ResponseEntity<Response> userUpdate(Authentication authentication, @RequestBody RequestUserUpdateDto requestUserUpdateDto) {
+        Response response = userService.updateUser(authentication.getName(), requestUserUpdateDto);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
 }

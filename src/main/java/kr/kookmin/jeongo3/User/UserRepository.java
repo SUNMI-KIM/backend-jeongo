@@ -13,6 +13,8 @@ public interface UserRepository extends JpaRepository<User, String> {
 
     Optional<User> findByLoginId(String loginId);
 
+    boolean existsByLoginId(String loginId);
+
     @Modifying
     @Query("update User u set u.report = u.report + 1 where u.id = :id")
     int updateReport(@Param("id") String id);

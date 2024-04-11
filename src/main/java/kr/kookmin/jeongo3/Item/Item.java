@@ -1,7 +1,9 @@
 package kr.kookmin.jeongo3.Item;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.UUID;
@@ -9,6 +11,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @Entity
+@NoArgsConstructor
 public class Item {
 
     @Id
@@ -24,4 +27,11 @@ public class Item {
 
     @Column
     private int price;
+
+    @Builder
+    public Item(String name, String image, int price) {
+        this.name = name;
+        this.image = image;
+        this.price = price;
+    }
 }

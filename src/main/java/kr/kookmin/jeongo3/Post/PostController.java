@@ -6,6 +6,7 @@ import kr.kookmin.jeongo3.Post.Dto.ResponsePostDto;
 import kr.kookmin.jeongo3.Response;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -44,7 +45,7 @@ public class PostController {
     }
 
     @GetMapping("/posts")
-    public ResponseEntity<Response> postList(@RequestParam PostType postType, Pageable pageable) {
+    public ResponseEntity<Response> postList(@RequestParam PostType postType, @PageableDefault(size = 10)Pageable pageable) { // page = 10 이런 식으로 보내주기
         Response response = postService.findAllPost(postType, pageable);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }

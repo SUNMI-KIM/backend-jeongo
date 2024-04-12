@@ -1,10 +1,8 @@
 package kr.kookmin.jeongo3.User;
 
 import kr.kookmin.jeongo3.Response;
-import kr.kookmin.jeongo3.Security.TokenDto;
 import kr.kookmin.jeongo3.User.Dto.RequestUserDto;
 import kr.kookmin.jeongo3.User.Dto.RequestUserUpdateDto;
-import kr.kookmin.jeongo3.User.Dto.ResponseUserDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;

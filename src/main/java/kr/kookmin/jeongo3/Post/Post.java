@@ -29,7 +29,7 @@ public class Post {
     @Column(name = "POST_ID")
     private String id;
 
-    @Column
+    @Enumerated(EnumType.STRING)
     private PostType postType; // 게시판 이름
 
     @Column

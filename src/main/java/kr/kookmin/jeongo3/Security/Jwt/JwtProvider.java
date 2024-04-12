@@ -1,4 +1,4 @@
-package kr.kookmin.jeongo3.Security;
+package kr.kookmin.jeongo3.Security.Jwt;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;

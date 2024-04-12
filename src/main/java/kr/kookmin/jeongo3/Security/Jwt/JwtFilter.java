@@ -1,4 +1,4 @@
-package kr.kookmin.jeongo3.Security;
+package kr.kookmin.jeongo3.Security.Jwt;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

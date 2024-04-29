@@ -2,10 +2,13 @@ package kr.kookmin.jeongo3.User;
 
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
+import kr.kookmin.jeongo3.Exception.ErrorCode;
 import kr.kookmin.jeongo3.Exception.MyException;
 import kr.kookmin.jeongo3.Response;
+import kr.kookmin.jeongo3.Security.Jwt.Jwt;
 import kr.kookmin.jeongo3.Security.Jwt.JwtProvider;
 import kr.kookmin.jeongo3.Security.Jwt.Dto.TokenDto;
+import kr.kookmin.jeongo3.Security.Jwt.JwtRepository;
 import kr.kookmin.jeongo3.User.Dto.RequestUserUpdateDto;
 import kr.kookmin.jeongo3.User.Dto.RequestUserDto;
 import kr.kookmin.jeongo3.User.Dto.ResponseUserDto;
@@ -28,6 +31,7 @@ public class UserService {
     private final EntityManager entityManager;
     private final JwtProvider jwtProvider;
     private final PasswordEncoder passwordEncoder;
+    private final JwtRepository jwtRepository;
 
     public Response findByIdUser(String id) { // 없으면 사용자 없음 에러 추가
         User user = userRepository.findById(id).orElseThrow(() -> new MyException(USER_NOT_FOUND));
@@ -53,6 +57,7 @@ public class UserService {
         }
         User user = requestUserDto.toEntity();
         user.setPassword(passwordEncoder.encode(requestUserDto.getPassword()));
+        user.setUserRole(UserRole.UNIV);
         userRepository.save(user);
         return new Response("유저 저장", HttpStatus.OK);
     }
@@ -61,13 +66,24 @@ public class UserService {
         return userRepository.findAll();
     }
 
-    public Response loginUser(String loginId, String password) { // 커스텀 예외처리로 바꾸기
+    @Transactional
+    public Response loginUser(String loginId, String password) {
         User user = userRepository.findByLoginId(loginId).orElseThrow(() -> new MyException(USER_NOT_FOUND));
         if (!passwordEncoder.matches(password, user.getPassword())) {
             throw new MyException(WRONG_PASSWORD);
         }
         String accessToken = jwtProvider.createAccessToken(user.getId(), user.getUserRole());
-        String refreshToken = jwtProvider.createRefreshToken();
+        String refreshToken;
+
+        if (jwtRepository.existsByUser(user)) {
+            Jwt jwt = jwtRepository.findByUser(user).orElseThrow(() -> new MyException(LOGIN_NOT_FOUND));
+            refreshToken = jwtProvider.createRefreshToken();
+            jwt.setRefreshToken(refreshToken);
+        }
+        else {
+            refreshToken = jwtProvider.createRefreshToken();
+            jwtRepository.save(new Jwt(user, refreshToken));
+        }
         TokenDto tokenDto = new TokenDto(accessToken, refreshToken);
         return new Response("로그인", tokenDto);
     }
@@ -96,6 +112,4 @@ public class UserService {
 
         return new Response("유저 수정", HttpStatus.OK);
     }
-
-
 }

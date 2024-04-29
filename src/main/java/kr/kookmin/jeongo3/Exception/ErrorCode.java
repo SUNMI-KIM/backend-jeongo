@@ -15,6 +15,8 @@ public enum ErrorCode {
     COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "댓글을 찾을 수 없습니다."),
     POSTLIKE_NOT_FOUND(HttpStatus.NOT_FOUND, "좋아요을 찾을 수 없습니다."),
     ITEM_NOT_FOUND(HttpStatus.NOT_FOUND, "상품을 찾을 수 없습니다."),
+    LOGIN_NOT_FOUND(HttpStatus.NOT_FOUND, "로그인 하지 않은 상태입니다."), // 이거 수정하기
+    DISC_NOT_FOUND(HttpStatus.NOT_FOUND, "DISC 테스트를 먼저 진행해주세요."),
 
     EXPIRED_TOKEN(HttpStatus.UNAUTHORIZED, "만료된 토큰입니다."),
     ACCESS_DENIED(HttpStatus.FORBIDDEN, "권한이 없습니다."),

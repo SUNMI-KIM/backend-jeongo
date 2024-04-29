@@ -1,6 +1,8 @@
 package kr.kookmin.jeongo3.Security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import kr.kookmin.jeongo3.Exception.CustomAccessDeniedHandler;
+import kr.kookmin.jeongo3.Exception.CustomAuthenticationEntryPoint;
 import kr.kookmin.jeongo3.Security.Jwt.JwtFilter;
 import kr.kookmin.jeongo3.Security.Jwt.JwtProvider;
 import lombok.RequiredArgsConstructor;
@@ -54,9 +56,13 @@ public class SecurityConfig {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeHttpRequests()
+                .requestMatchers("/posts").hasRole("ADMIN")
                 .anyRequest().permitAll()
                 .and()
-                .addFilterBefore(new JwtFilter(jwtProvider), UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(new JwtFilter(jwtProvider), UsernamePasswordAuthenticationFilter.class)
+                .exceptionHandling()
+                .authenticationEntryPoint(new CustomAuthenticationEntryPoint(objectMapper()))
+                .accessDeniedHandler(new CustomAccessDeniedHandler(objectMapper()));
 
         return http.build();
     }

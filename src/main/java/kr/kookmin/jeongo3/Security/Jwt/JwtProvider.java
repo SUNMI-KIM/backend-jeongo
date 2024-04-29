@@ -69,18 +69,13 @@ public class JwtProvider {
     }
 
     public boolean validateToken(String token) {
-        try {
-            // Bearer 검증
-            if (!token.substring(0, "BEARER ".length()).equalsIgnoreCase("BEARER ")) {
-                return false;
-            } else {
-                token = token.split(" ")[1].trim();
-            }
-            Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
-            return !claims.getBody().getExpiration().before(new Date());
-        } catch (Exception e) {
+        if (!token.substring(0, "BEARER ".length()).equalsIgnoreCase("BEARER ")) {
             return false;
+        } else {
+            token = token.split(" ")[1].trim();
         }
+        Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
+        return !claims.getBody().getExpiration().before(new Date());
     }
 
     public String disassembleToken(String token) {

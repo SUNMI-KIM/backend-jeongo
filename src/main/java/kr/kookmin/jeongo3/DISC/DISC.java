@@ -2,7 +2,14 @@ package kr.kookmin.jeongo3.DISC;
 
 import jakarta.persistence.*;
 import kr.kookmin.jeongo3.User.User;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+@Getter
+@Setter
+@Entity
+@NoArgsConstructor
 public class DISC {
 
     @Id
@@ -16,5 +23,4 @@ public class DISC {
 
     @Enumerated(EnumType.STRING)
     private DISCCode discCode;
-
 }

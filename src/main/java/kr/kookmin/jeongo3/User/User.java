@@ -49,9 +49,6 @@ public class User {
     private String department; // 대학 과, 희망 과
 
     @Column
-    private String DISC; // DISC 테스트 결과
-
-    @Column
     private String image;
 
     @Column

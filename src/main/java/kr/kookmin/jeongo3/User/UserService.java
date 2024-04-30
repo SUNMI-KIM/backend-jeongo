@@ -33,7 +33,7 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final JwtRepository jwtRepository;
 
-    public Response findByIdUser(String id) { // 없으면 사용자 없음 에러 추가
+    public ResponseUserDto findByIdUser(String id) { // 없으면 사용자 없음 에러 추가
         User user = userRepository.findById(id).orElseThrow(() -> new MyException(USER_NOT_FOUND));
         ResponseUserDto responseUserDto = ResponseUserDto.builder()
                 .userRole(user.getUserRole())
@@ -48,18 +48,18 @@ public class UserService {
                 .image(user.getImage())
                 .point(user.getPoint())
                 .build();
-        return new Response("유저 조회", responseUserDto);
+
+        return responseUserDto;
 }
 
-    public Response saveUser(RequestUserDto requestUserDto) {
-        if (!userRepository.existsByLoginId(requestUserDto.getLoginId())) {
+    public void saveUser(RequestUserDto requestUserDto) {
+        if (userRepository.existsByLoginId(requestUserDto.getLoginId())) {
             throw new MyException(DUPLICATED_USER_ID);
         }
         User user = requestUserDto.toEntity();
         user.setPassword(passwordEncoder.encode(requestUserDto.getPassword()));
         user.setUserRole(UserRole.UNIV);
         userRepository.save(user);
-        return new Response("유저 저장", HttpStatus.OK);
     }
 
     public List<User> findAllUser() { // 디버깅용
@@ -67,7 +67,7 @@ public class UserService {
     }
 
     @Transactional
-    public Response loginUser(String loginId, String password) {
+    public TokenDto loginUser(String loginId, String password) {
         User user = userRepository.findByLoginId(loginId).orElseThrow(() -> new MyException(USER_NOT_FOUND));
         if (!passwordEncoder.matches(password, user.getPassword())) {
             throw new MyException(WRONG_PASSWORD);
@@ -84,20 +84,19 @@ public class UserService {
             refreshToken = jwtProvider.createRefreshToken();
             jwtRepository.save(new Jwt(user, refreshToken));
         }
-        TokenDto tokenDto = new TokenDto(accessToken, refreshToken);
-        return new Response("로그인", tokenDto);
+        return new TokenDto(accessToken, refreshToken);
     }
 
     @Transactional
-    public Response reportUser(String id) {
+    public int reportUser(String id) {
         if (!userRepository.existsById(id)) {
             throw new MyException(USER_NOT_FOUND);
         }
-        return new Response("유저 신고", userRepository.updateReport(id));
+        return userRepository.updateReport(id);
     }
 
     @Transactional
-    public Response updateUser(String id, RequestUserUpdateDto requestUserUpdateDto) {
+    public void updateUser(String id, RequestUserUpdateDto requestUserUpdateDto) {
         if (!userRepository.existsById(id)) {
             throw new MyException(USER_NOT_FOUND);
         }
@@ -109,7 +108,5 @@ public class UserService {
         if (requestUserUpdateDto.getPassword() != null) {
             user.setPassword(passwordEncoder.encode(requestUserUpdateDto.getPassword()));
         }
-
-        return new Response("유저 수정", HttpStatus.OK);
     }
 }

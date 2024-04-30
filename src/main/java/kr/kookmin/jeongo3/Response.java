@@ -1,16 +1,18 @@
 package kr.kookmin.jeongo3;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class Response {
+@Builder
+public class Response<T> {
 
     private String message;
-    private Object data;
+    private T data;
 
-    public Response(String message, Object data) {
+    public Response(String message, T data) {
         this.message = message;
         this.data = data;
     }

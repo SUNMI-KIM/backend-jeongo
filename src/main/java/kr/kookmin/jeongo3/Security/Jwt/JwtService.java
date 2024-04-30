@@ -22,7 +22,7 @@ public class JwtService {
     private final UserRepository userRepository;
 
     @Transactional
-    public Response updateRefreshToken(String accessToken, String refreshToken) {
+    public TokenDto updateRefreshToken(String accessToken, String refreshToken) {
         String userId;
 
         try {
@@ -44,7 +44,6 @@ public class JwtService {
         }
         refreshToken = jwtProvider.createRefreshToken();
         jwt.setRefreshToken(refreshToken);
-        TokenDto tokenDto = new TokenDto(accessToken, refreshToken);
-        return new Response("토큰 재발급", tokenDto);
+        return new TokenDto(accessToken, refreshToken);
     }
 }

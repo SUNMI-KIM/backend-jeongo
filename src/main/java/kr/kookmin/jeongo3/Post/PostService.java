@@ -30,30 +30,27 @@ public class PostService {
     private final PostLikeRepository postLikeRepository;
     private final EntityManager entityManager;
 
-    public Response savePost(RequestPostDto requestPostDto, String userId) {
+    public void savePost(RequestPostDto requestPostDto, String userId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new MyException(USER_NOT_FOUND));
         Post post = requestPostDto.toEntity();
         post.setUser(user);
         postRepository.save(post);
-        return new Response("게시물 저장", HttpStatus.OK);
     }
 
-    public Response deletePost(String id, String userId) { // 커스텀 예외처리
+    public void deletePost(String id, String userId) { // 커스텀 예외처리
         if (!postRepository.findById(id).orElseThrow(() -> new MyException(POST_NOT_FOUND)).getUser().getId().equals(userId)) {
             throw new MyException(ACCESS_DENIED);
         }
         postRepository.deleteById(id);
-        return new Response("게시물 삭제", HttpStatus.OK);
     }
 
-    public Response findAllPost(PostType postType, Pageable pageable) {
+    public List<PostMapping> findAllPost(PostType postType, Pageable pageable) {
         Slice<PostMapping> slice = postRepository.findAllByPostTypeOrderByTimeDesc(postType, pageable);
-        List<PostMapping> postList = new ArrayList<>(slice.getContent().stream().toList());
-        return new Response("게시물 리스트", postList);
+        return new ArrayList<>(slice.getContent().stream().toList());
     }
 
     @Transactional
-    public Response updatePost(RequestPostDto requestPost, String userId) {
+    public void updatePost(RequestPostDto requestPost, String userId) {
         if (!postRepository.findById(requestPost.getId()).orElseThrow(() -> new MyException(POST_NOT_FOUND)).getUser().getId().equals(userId)) {
             throw new RuntimeException();
         }
@@ -61,20 +58,18 @@ public class PostService {
         post.setTitle(requestPost.getTitle());
         post.setContent(requestPost.getContent());
         post.setImage(requestPost.getImage());
-        return new Response("게시물 수정", HttpStatus.OK);
     }
 
-    public Response findPost(String postId, String userId) { // 커스텀 예외처리
+    public ResponsePostDto findPost(String postId, String userId) { // 커스텀 예외처리
         Post post = postRepository.findById(postId).orElseThrow(() -> new MyException(POST_NOT_FOUND));
         User user = userRepository.findById(userId).orElseThrow(() -> new MyException(USER_NOT_FOUND));
         ResponsePostDto responsePostDto = new ResponsePostDto(post);
         responsePostDto.setLike(postLikeRepository.existsByUserAndPost(user, post));
         responsePostDto.setLikeNumber(postLikeRepository.countByUserAndPost(user, post));
-        return new Response("게시물 찾기", responsePostDto);
+        return responsePostDto;
     }
 
-    public Response findHotPost(PostType postType) {
-        PostMapping post = postRepository.findFirstHotPost(postType);
-        return new Response("좋아요 최다 게시글", post);
+    public PostMapping findHotPost(PostType postType) {
+        return postRepository.findFirstHotPost(postType);
     }
 }

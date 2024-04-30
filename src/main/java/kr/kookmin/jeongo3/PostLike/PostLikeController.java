@@ -16,14 +16,16 @@ public class PostLikeController {
     private final PostLikeService postLikeService;
 
     @PostMapping("/post-like")
-    public ResponseEntity<Response> postLikeSave(String postId, Authentication authentication) {
-        Response response = postLikeService.savePostLike(postId, authentication.getName());
+    public ResponseEntity<Response<Object>> postLikeSave(String postId, Authentication authentication) {
+        postLikeService.savePostLike(postId, authentication.getName());
+        Response response = Response.builder().message("좋아요 저장").data(null).build();
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     @DeleteMapping("/post-like")
-    public ResponseEntity<Response> postLikeDelete(String postId, Authentication authentication) {
-        Response response = postLikeService.deletePostLike(postId, authentication.getName());
+    public ResponseEntity<Response<Object>> postLikeDelete(String postId, Authentication authentication) {
+        postLikeService.deletePostLike(postId, authentication.getName());
+        Response response = Response.builder().message("좋아요 삭제").data(null).build();
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 

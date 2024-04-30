@@ -19,25 +19,23 @@ public class ItemService {
 
     private final ItemRepository itemRepository;
 
-    public Response saveItem(RequestItemDto requestItemDto) {
+    public void saveItem(RequestItemDto requestItemDto) {
         Item item = requestItemDto.toEntity(requestItemDto.getName(),
                                             requestItemDto.getImage(),
                                             requestItemDto.getPrice());
         itemRepository.save(item);
-        return new Response("상품 저장", HttpStatus.OK);
     }
 
-    public Response findItem(String itemId) {
+    public ResponseItemDto findItem(String itemId) {
         Item item = itemRepository.findById(itemId).orElseThrow(() -> new MyException(ITEM_NOT_FOUND));
-        ResponseItemDto responseItemDto = new ResponseItemDto(item);
-        return new Response("상품 상세 조회", responseItemDto);
+        return new ResponseItemDto(item);
     }
 
-    public Response findAllItem() {
+    public List<ResponseItemDto> findAllItem() {
         List<ResponseItemDto> items = itemRepository.findAll()
                 .stream()
                 .map(ResponseItemDto::new)
                 .collect(Collectors.toList());
-        return new Response("상품 조회", items);
+        return items;
     }
 }

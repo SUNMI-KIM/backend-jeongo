@@ -16,13 +16,15 @@ public class CommentController {
 
     @PostMapping("/comment")
     public ResponseEntity<Response> commentUpload(@RequestBody RequestCommentDto requestCommentDto, Authentication authentication) {
-        Response response = commentService.saveComment(requestCommentDto, authentication.getName());
+        commentService.saveComment(requestCommentDto, authentication.getName());
+        Response response = Response.builder().message("게시글 수정").data(null).build();
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     @DeleteMapping("/comment")
     public ResponseEntity<Response> commentDelete(@RequestParam String commentId, Authentication authentication) {
-        Response response = commentService.deleteComment(commentId, authentication.getName());
+        commentService.deleteComment(commentId, authentication.getName());
+        Response response = Response.builder().message("게시글 수정").data(null).build();
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 

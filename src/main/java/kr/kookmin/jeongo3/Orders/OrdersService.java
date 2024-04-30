@@ -22,13 +22,12 @@ public class OrdersService {
     private final ItemRepository itemRepository;
     private final OrdersRepository ordersRepository;
 
-    public Response saveOrders(RequestOrdersDto requestOrdersDto) {
+    public void saveOrders(RequestOrdersDto requestOrdersDto) {
         User user = userRepository.findById(requestOrdersDto.getUserId()).orElseThrow(() -> new MyException(USER_NOT_FOUND));
         Item item = itemRepository.findById(requestOrdersDto.getItemId()).orElseThrow(() -> new MyException(ITEM_NOT_FOUND));
 
         Orders orders = new Orders(user, item);
         ordersRepository.save(orders);
-        return new Response("상품 저장", HttpStatus.OK);
     }
 
 }

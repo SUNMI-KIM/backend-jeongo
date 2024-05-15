@@ -18,7 +18,7 @@ public class ExceptionHandler {
     @org.springframework.web.bind.annotation.ExceptionHandler(MissingServletRequestParameterException.class)
     public ResponseEntity<ExceptionDto> MissingParamHandler(MissingServletRequestParameterException e) {
         ErrorCode errorCode = ErrorCode.BAD_REQUEST;
-        return ResponseEntity.status(errorCode.getHttpStatus()).body(new ExceptionDto(errorCode, errorCode.getMessage()));
+        return ResponseEntity.status(errorCode.getHttpStatus()).body(new ExceptionDto(errorCode, "입력 인자 값이 없습니다."));
     }
 
     @org.springframework.web.bind.annotation.ExceptionHandler(Exception.class)

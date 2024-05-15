@@ -2,8 +2,12 @@ package kr.kookmin.jeongo3.Item.Dto;
 
 import kr.kookmin.jeongo3.Item.Item;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
+@Setter
+@NoArgsConstructor
 public class ResponseItemDto {
 
     private String id;

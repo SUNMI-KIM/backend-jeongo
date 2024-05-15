@@ -1,10 +1,8 @@
 package kr.kookmin.jeongo3.User;
 
-import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
-import kr.kookmin.jeongo3.Exception.ErrorCode;
+import kr.kookmin.jeongo3.Aws.S3Service;
 import kr.kookmin.jeongo3.Exception.MyException;
-import kr.kookmin.jeongo3.Response;
 import kr.kookmin.jeongo3.Security.Jwt.Jwt;
 import kr.kookmin.jeongo3.Security.Jwt.JwtProvider;
 import kr.kookmin.jeongo3.Security.Jwt.Dto.TokenDto;
@@ -14,11 +12,12 @@ import kr.kookmin.jeongo3.User.Dto.RequestUserDto;
 import kr.kookmin.jeongo3.User.Dto.ResponseUserDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.List;
+import java.util.UUID;
 
 import static kr.kookmin.jeongo3.Exception.ErrorCode.*;
 
@@ -28,27 +27,28 @@ import static kr.kookmin.jeongo3.Exception.ErrorCode.*;
 public class UserService {
 
     private final UserRepository userRepository;
-    private final EntityManager entityManager;
     private final JwtProvider jwtProvider;
     private final PasswordEncoder passwordEncoder;
     private final JwtRepository jwtRepository;
+    private final S3Service s3Service;
 
-    public ResponseUserDto findByIdUser(String id) { // 없으면 사용자 없음 에러 추가
+    public ResponseUserDto findByIdUser(String id) {
         User user = userRepository.findById(id).orElseThrow(() -> new MyException(USER_NOT_FOUND));
         ResponseUserDto responseUserDto = ResponseUserDto.builder()
                 .userRole(user.getUserRole())
-                .name(user.getName())
                 .email(user.getEmail())
-                .gender(user.getGender())
+                .name(user.getName())
                 .age(user.getAge())
-                .loginId(user.getLoginId())
-                .phoneNum(user.getPhoneNum())
-                .univ(user.getUniv())
-                .department(user.getDepartment())
-                .image(user.getImage())
                 .point(user.getPoint())
+                .univ(user.getUniv())
+                .gender(user.getGender())
+                .department(user.getDepartment())
+                .phoneNum(user.getPhoneNum())
+                .loginId(user.getLoginId())
                 .build();
-
+        if (user.getImage() != null) {
+            responseUserDto.setImage(s3Service.getPresignedURL(user.getImage()));
+        }
         return responseUserDto;
 }
 
@@ -58,7 +58,17 @@ public class UserService {
         }
         User user = requestUserDto.toEntity();
         user.setPassword(passwordEncoder.encode(requestUserDto.getPassword()));
-        user.setUserRole(UserRole.UNIV);
+        user.setUserRole(requestUserDto.getUserRole());
+
+        if (requestUserDto.getImage() != null) {
+            String fileName = UUID.randomUUID() + requestUserDto.getImage().getOriginalFilename();
+            try {
+                s3Service.upload(requestUserDto.getImage(), fileName);
+                user.setImage(fileName);
+            } catch (IOException e) {
+
+            }
+        }
         userRepository.save(user);
     }
 
@@ -76,7 +86,7 @@ public class UserService {
         String refreshToken;
 
         if (jwtRepository.existsByUser(user)) {
-            Jwt jwt = jwtRepository.findByUser(user).orElseThrow(() -> new MyException(LOGIN_NOT_FOUND));
+            Jwt jwt = jwtRepository.findTopByUser(user).orElseThrow(() -> new MyException(LOGIN_NOT_FOUND));
             refreshToken = jwtProvider.createRefreshToken();
             jwt.setRefreshToken(refreshToken);
         }
@@ -97,13 +107,20 @@ public class UserService {
 
     @Transactional
     public void updateUser(String id, RequestUserUpdateDto requestUserUpdateDto) {
-        if (!userRepository.existsById(id)) {
-            throw new MyException(USER_NOT_FOUND);
-        }
-        User user = entityManager.find(User.class, id);
+        User user = userRepository.findById(id).orElseThrow(() -> new MyException(USER_NOT_FOUND));
         user.setName(requestUserUpdateDto.getName());
-        user.setImage(requestUserUpdateDto.getImage());
         user.setUniv(user.getUniv());
+
+        if (requestUserUpdateDto.getImage() != null) {
+            String fileName = UUID.randomUUID() + requestUserUpdateDto.getImage().getOriginalFilename();
+            try {
+                s3Service.delete(user.getImage());
+                s3Service.upload(requestUserUpdateDto.getImage(), fileName);
+                user.setImage(fileName);
+            } catch (IOException e) {
+
+            }
+        }
 
         if (requestUserUpdateDto.getPassword() != null) {
             user.setPassword(passwordEncoder.encode(requestUserUpdateDto.getPassword()));

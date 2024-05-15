@@ -3,6 +3,7 @@ package kr.kookmin.jeongo3.User.Dto;
 import kr.kookmin.jeongo3.User.User;
 import kr.kookmin.jeongo3.User.UserRole;
 import lombok.Getter;
+import org.springframework.web.multipart.MultipartFile;
 
 @Getter
 public class RequestUserDto {
@@ -26,7 +27,7 @@ public class RequestUserDto {
 
     private String department; // 대학 과, 희망 과
 
-    private String image;
+    private MultipartFile image;
 
     public User toEntity() {
         return User.builder()
@@ -39,7 +40,6 @@ public class RequestUserDto {
                 .phoneNum(phoneNum)
                 .univ(univ)
                 .department(department)
-                .image(image)
                 .build();
     }
 

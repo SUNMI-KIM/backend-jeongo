@@ -11,4 +11,6 @@ public interface DISCRepository extends JpaRepository<DISC, String> {
 
     public Optional<DISC> findByUser(User user);
 
+    public long countByDiscCode(DISCCode discCode);
+
 }

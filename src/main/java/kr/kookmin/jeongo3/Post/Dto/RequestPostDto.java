@@ -3,6 +3,7 @@ package kr.kookmin.jeongo3.Post.Dto;
 import kr.kookmin.jeongo3.Post.Post;
 import kr.kookmin.jeongo3.Post.PostType;
 import lombok.Getter;
+import org.springframework.web.multipart.MultipartFile;
 
 @Getter
 public class RequestPostDto {
@@ -10,7 +11,7 @@ public class RequestPostDto {
     private String id;
     private String title;
     private String content;
-    private String image;
+    private MultipartFile image;
     private PostType postType;
 
     public Post toEntity() {
@@ -18,7 +19,6 @@ public class RequestPostDto {
                 .id(id)
                 .title(title)
                 .content(content)
-                .image(image)
                 .postType(postType)
                 .build();
     }

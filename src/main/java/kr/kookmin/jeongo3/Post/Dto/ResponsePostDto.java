@@ -1,12 +1,7 @@
 package kr.kookmin.jeongo3.Post.Dto;
 
-import kr.kookmin.jeongo3.Comment.Comment;
 import kr.kookmin.jeongo3.Comment.Dto.ResponseCommentDto;
 import kr.kookmin.jeongo3.Post.Post;
-import kr.kookmin.jeongo3.Post.PostService;
-import kr.kookmin.jeongo3.Post.PostType;
-import kr.kookmin.jeongo3.User.Dto.ResponseUserDto;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -39,7 +34,6 @@ public class ResponsePostDto {
         this.content = post.getContent();
         this.views = post.getViews();
         this.commentNumber = post.getComments().size();
-        this.image = post.getImage();
         this.responseCommentDto = post.getComments()
                 .stream()
                 .map(ResponseCommentDto::new)

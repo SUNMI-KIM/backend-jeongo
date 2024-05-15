@@ -1,7 +1,6 @@
 package kr.kookmin.jeongo3.Comment.Dto;
 
 import kr.kookmin.jeongo3.Comment.Comment;
-import lombok.Builder;
 import lombok.Getter;
 
 @Getter

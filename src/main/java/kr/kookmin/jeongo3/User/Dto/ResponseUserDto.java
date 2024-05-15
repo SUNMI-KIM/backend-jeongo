@@ -3,8 +3,10 @@ package kr.kookmin.jeongo3.User.Dto;
 import kr.kookmin.jeongo3.User.UserRole;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 
 @Getter
+@Setter
 public class ResponseUserDto {
     private UserRole userRole;
 
@@ -38,7 +40,6 @@ public class ResponseUserDto {
                            String phoneNum,
                            String univ,
                            String department,
-                           String image,
                            int point) {
         this.userRole = userRole;
         this.name = name;
@@ -49,7 +50,6 @@ public class ResponseUserDto {
         this.phoneNum = phoneNum;
         this.univ = univ;
         this.department = department;
-        this.image = image;
         this.point = point;
     }
 }

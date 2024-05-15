@@ -1,5 +1,12 @@
 package kr.kookmin.jeongo3.Post;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import kr.kookmin.jeongo3.Exception.ExceptionDto;
 import kr.kookmin.jeongo3.Post.Dto.PostMapping;
 import kr.kookmin.jeongo3.Post.Dto.RequestPostDto;
 import kr.kookmin.jeongo3.Post.Dto.ResponsePostDto;
@@ -16,10 +23,17 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
+@Tag(name = "Post", description = "게시글 관련 API")
 public class PostController {
 
     private final PostService postService;
 
+    @Operation(summary = "글 올리기", description = "게시글 서비스 저장 기능")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "성공", useReturnTypeSchema = true),
+            @ApiResponse(responseCode = "404", description = "유저를 찾을 수 없음", content = @Content(
+                    schema = @Schema(implementation = ExceptionDto.class)))
+    })
     @org.springframework.web.bind.annotation.PostMapping("/post")
     public ResponseEntity<Response<Object>> postUpload(@RequestBody RequestPostDto requestPostDto, Authentication authentication) {
         postService.savePost(requestPostDto, authentication.getName());
@@ -27,6 +41,12 @@ public class PostController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
+    @Operation(summary = "삭제", description = "게시글 서비스 삭제 기능")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "성공", useReturnTypeSchema = true),
+            @ApiResponse(responseCode = "404", description = "게시글을 찾을 수 없음", content = @Content(
+                    schema = @Schema(implementation = ExceptionDto.class)))
+    })
     @DeleteMapping("/post")
     public ResponseEntity<Response<Object>> postDelete(@RequestParam String id, Authentication authentication) {
         postService.deletePost(id, authentication.getName());
@@ -34,6 +54,14 @@ public class PostController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
+    @Operation(summary = "수정", description = "게시글 서비스 수정 기능")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "성공", useReturnTypeSchema = true),
+            @ApiResponse(responseCode = "404", description = "게시글을 찾을 수 없음", content = @Content(
+                    schema = @Schema(implementation = ExceptionDto.class))),
+            @ApiResponse(responseCode = "400", description = "자신의 게시글만 수정 가능", content = @Content(
+                    schema = @Schema(implementation = ExceptionDto.class)))
+    })
     @PatchMapping("/post")
     public ResponseEntity<Response<Object>> postModify(@RequestBody RequestPostDto requestPost, Authentication authentication) {
         postService.updatePost(requestPost, authentication.getName());
@@ -41,6 +69,14 @@ public class PostController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
+    @Operation(summary = "게시글 상세", description = "게시글 서비스 상세 불러오기 기능")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "성공", useReturnTypeSchema = true),
+            @ApiResponse(responseCode = "404", description = "유저를 찾을 수 없음", content = @Content(
+                    schema = @Schema(implementation = ExceptionDto.class))),
+            @ApiResponse(responseCode = "404", description = "게시글을 찾을 수 없음", content = @Content(
+                    schema = @Schema(implementation = ExceptionDto.class)))
+    })
     @GetMapping("/post")
     public ResponseEntity<Response<ResponsePostDto>> postDetails(@RequestParam String id, Authentication authentication) {
         ResponsePostDto responsePostDto = postService.findPost(id, authentication.getName());
@@ -48,6 +84,10 @@ public class PostController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
+    @Operation(summary = "전체 게시글", description = "게시글 서비스 전체 게시글 불러오기 기능")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "성공", useReturnTypeSchema = true)
+    })
     @GetMapping("/posts")
     public ResponseEntity<Response<List<PostMapping>>> postList(@RequestParam PostType postType, @PageableDefault(size = 10)Pageable pageable) { // page = 10 이런 식으로 보내주기
         List<PostMapping> postList = postService.findAllPost(postType, pageable);
@@ -55,6 +95,10 @@ public class PostController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
+    @Operation(summary = "핫 게시글", description = "게시글 서비스 핫 게시글 불러오기 기능")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "성공", useReturnTypeSchema = true)
+    })
     @GetMapping("/hot-post")
     public ResponseEntity<Response<PostMapping>> postHotFind(PostType postType) { // 함수 이름 적당한걸로 바꾸기
         PostMapping post = postService.findHotPost(postType);

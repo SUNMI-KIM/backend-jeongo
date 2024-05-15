@@ -3,10 +3,8 @@ package kr.kookmin.jeongo3.Comment;
 import kr.kookmin.jeongo3.Comment.Dto.RequestCommentDto;
 import kr.kookmin.jeongo3.Exception.MyException;
 import kr.kookmin.jeongo3.Post.PostRepository;
-import kr.kookmin.jeongo3.Response;
 import kr.kookmin.jeongo3.User.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import static kr.kookmin.jeongo3.Exception.ErrorCode.*;
@@ -28,8 +26,8 @@ public class CommentService {
 
     public void deleteComment(String commentId, String userId) {
         Comment comment = commentRepository.findById(commentId).orElseThrow(() -> new MyException(COMMENT_NOT_FOUND)); // 커스텀 예외처리
-        if (comment.getUser().getId() != userId) {
-            throw new MyException(ACCESS_DENIED); // ACCESS_DINIED 에러가 맞는지 점검
+        if (!comment.getUser().getId().equals(userId)) {
+            throw new MyException(BAD_REQUEST);
         }
         commentRepository.delete(comment);
     }

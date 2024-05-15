@@ -7,14 +7,14 @@ import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import jakarta.persistence.*;
 import kr.kookmin.jeongo3.Post.Post;
 import kr.kookmin.jeongo3.User.User;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 @Getter
 @Setter
@@ -33,6 +33,7 @@ public class PostLike {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "POST_ID")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Post post;
 
     @CreationTimestamp

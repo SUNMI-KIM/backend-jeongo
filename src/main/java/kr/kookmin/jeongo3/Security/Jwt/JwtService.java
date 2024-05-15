@@ -6,7 +6,6 @@ import io.jsonwebtoken.SignatureException;
 import jakarta.transaction.Transactional;
 import kr.kookmin.jeongo3.Exception.ErrorCode;
 import kr.kookmin.jeongo3.Exception.MyException;
-import kr.kookmin.jeongo3.Response;
 import kr.kookmin.jeongo3.Security.Jwt.Dto.TokenDto;
 import kr.kookmin.jeongo3.User.User;
 import kr.kookmin.jeongo3.User.UserRepository;
@@ -38,9 +37,9 @@ public class JwtService {
         User user = userRepository.findById(userId).orElseThrow(() -> new MyException(ErrorCode.USER_NOT_FOUND));
         accessToken = jwtProvider.createAccessToken(user.getId(), user.getUserRole());
 
-        Jwt jwt = jwtRepository.findByUser(user).orElseThrow(() -> new MyException(ErrorCode.LOGIN_NOT_FOUND));
+        Jwt jwt = jwtRepository.findTopByUser(user).orElseThrow(() -> new MyException(ErrorCode.LOGIN_NOT_FOUND));
         if (refreshToken == jwt.getRefreshToken()) {
-            throw new MyException(ErrorCode.WRONG_TOKEN); // 이 에러가 맞는지 생각해보기
+            throw new MyException(ErrorCode.TOKEN_NOT_FOUND); // 이 에러가 맞는지 생각해보기
         }
         refreshToken = jwtProvider.createRefreshToken();
         jwt.setRefreshToken(refreshToken);

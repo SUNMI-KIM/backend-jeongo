@@ -72,7 +72,7 @@ public class JwtProvider {
         if (!token.substring(0, "BEARER ".length()).equalsIgnoreCase("BEARER ")) {
             return false;
         } else {
-            token = token.split(" ")[1].trim();
+            token = disassembleToken(token);
         }
         Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
         return !claims.getBody().getExpiration().before(new Date());

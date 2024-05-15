@@ -40,6 +40,14 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
+    @Operation(summary = "로그인", description = "유저 서비스 로그인 기능")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "성공", useReturnTypeSchema = true),
+            @ApiResponse(responseCode = "404", description = "유저를 찾을 수 없음", content = @Content(
+                    schema = @Schema(implementation = ExceptionDto.class))),
+            @ApiResponse(responseCode = "400", description = "유저 패스워드가 일치하지 않음", content = @Content(
+                    schema = @Schema(implementation = ExceptionDto.class)))
+    })
     @GetMapping("/login")
     public ResponseEntity<Response<TokenDto>> userLogin(@RequestParam String loginId, @RequestParam String password) {
         TokenDto tokenDto = userService.loginUser(loginId, password);
@@ -48,6 +56,12 @@ public class UserController {
     }
 
 
+    @Operation(summary = "마이페이지", description = "유저 마이페이지 기능")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "성공", useReturnTypeSchema = true),
+            @ApiResponse(responseCode = "404", description = "유저를 찾을 수 없음", content = @Content(
+                    schema = @Schema(implementation = ExceptionDto.class)))
+    })
     @GetMapping("/user")
     public ResponseEntity<Response<ResponseUserDto>> userDetails(Authentication authentication) {
         ResponseUserDto responseUserDto = userService.findByIdUser(authentication.getName());
@@ -55,12 +69,17 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
-    @GetMapping("/users")
+    @GetMapping("/users") // 디버깅용
     public List<User> userList() { // 얘는 디비 보는 용도
         return userService.findAllUser();
     }
 
-
+    @Operation(summary = "신고", description = "유저 서비스 신고 기능")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "성공", useReturnTypeSchema = true),
+            @ApiResponse(responseCode = "404", description = "유저를 찾을 수 없음", content = @Content(
+                    schema = @Schema(implementation = ExceptionDto.class)))
+    })
     @PatchMapping("/user/report")
     public ResponseEntity<Response<Integer>> userReport(@RequestParam String id) {
         int report = userService.reportUser(id);
@@ -68,6 +87,12 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
+    @Operation(summary = "수정", description = "유저 서비스 수정 기능")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "성공", useReturnTypeSchema = true),
+            @ApiResponse(responseCode = "404", description = "유저를 찾을 수 없음", content = @Content(
+                    schema = @Schema(implementation = ExceptionDto.class)))
+    })
     @PutMapping("/user")
     public ResponseEntity<Response<Object>> userUpdate(Authentication authentication, @RequestBody RequestUserUpdateDto requestUserUpdateDto) {
         userService.updateUser(authentication.getName(), requestUserUpdateDto);

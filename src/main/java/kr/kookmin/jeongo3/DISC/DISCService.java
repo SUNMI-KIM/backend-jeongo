@@ -24,16 +24,14 @@ public class DISCService {
     private final UserRepository userRepository;
     private final DISCRepository discRepository;
 
-    public DISCResponseDto findDISC(String userId) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new MyException(ErrorCode.USER_NOT_FOUND));
+    public DISCResponseDto findDISC(User user) {
         DISC disc = discRepository.findByUser(user).orElseThrow(() -> new MyException(ErrorCode.DISC_NOT_FOUND));
         long countByDISC = discRepository.countByDiscCode(disc.getDiscCode());
         return DISCResponseDto.builder().sameDISCNum(countByDISC).discCode(disc.getDiscCode()).build();
     }
 
     @Transactional
-    public DISCResponseDto saveDISC(DISCRequestDto discRequestDto, String userId) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new MyException(ErrorCode.USER_NOT_FOUND));
+    public DISCResponseDto saveDISC(DISCRequestDto discRequestDto, User user) {
         discRepository.deleteByUser(user);
         DISCCode discCode = elicitDISC(discRequestDto);
         DISC disc = DISC.builder().user(user).discCode(discCode).build();

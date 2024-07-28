@@ -18,8 +18,7 @@ public class PostLikeService {
     private final PostRepository postRepository;
     private final PostLikeRepository postLikeRepository;
 
-    public void savePostLike(String postId, String userId) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new MyException(USER_NOT_FOUND));
+    public void savePostLike(String postId, User user) {
         Post post = postRepository.findById(postId).orElseThrow(() -> new MyException(POST_NOT_FOUND));
         if (postLikeRepository.existsByUserAndPost(user, post)) {
             throw new MyException(BAD_REQUEST);
@@ -27,11 +26,10 @@ public class PostLikeService {
         postLikeRepository.save(new PostLike(user, post));
     }
 
-    public void deletePostLike(String postId, String userId) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new MyException(USER_NOT_FOUND));
+    public void deletePostLike(String postId, User user) {
         Post post = postRepository.findById(postId).orElseThrow(() -> new MyException(POST_NOT_FOUND));
         PostLike postLike = postLikeRepository.findByUserAndPost(user, post).orElseThrow(() -> new MyException(POSTLIKE_NOT_FOUND));
-        if (!postLike.getUser().getId().equals(userId)) {
+        if (!postLike.getUser().getId().equals(user.getId())) {
             throw new MyException(BAD_REQUEST);
         }
         postLikeRepository.delete(postLike);

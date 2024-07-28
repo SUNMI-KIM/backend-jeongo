@@ -31,8 +31,7 @@ public class UserService {
     private final JwtRepository jwtRepository;
     private final S3Service s3Service;
 
-    public ResponseUserDto findByIdUser(String id) {
-        User user = userRepository.findById(id).orElseThrow(() -> new MyException(USER_NOT_FOUND));
+    public ResponseUserDto findByIdUser(User user) {
         ResponseUserDto responseUserDto = ResponseUserDto.builder()
                 .userRole(user.getUserRole())
                 .email(user.getEmail())
@@ -112,8 +111,7 @@ public class UserService {
     }
 
     @Transactional
-    public void updateUser(String id, RequestUserUpdateDto requestUserUpdateDto) {
-        User user = userRepository.findById(id).orElseThrow(() -> new MyException(USER_NOT_FOUND));
+    public void updateUser(User user, RequestUserUpdateDto requestUserUpdateDto) {
         user.setName(requestUserUpdateDto.getName());
         user.setUniv(requestUserUpdateDto.getUniv());
         user.setDepartment(requestUserUpdateDto.getDepartment());

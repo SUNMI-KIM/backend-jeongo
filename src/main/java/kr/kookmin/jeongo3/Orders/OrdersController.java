@@ -11,6 +11,7 @@ import kr.kookmin.jeongo3.Exception.ExceptionDto;
 import kr.kookmin.jeongo3.Orders.Dto.OrdersMapping;
 import kr.kookmin.jeongo3.Orders.Dto.RequestOrdersDto;
 import kr.kookmin.jeongo3.Common.Response;
+import kr.kookmin.jeongo3.User.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -36,8 +37,8 @@ public class OrdersController {
                     schema = @Schema(implementation = ExceptionDto.class)))
     })
     @PostMapping("/orders")
-    public ResponseEntity<Response<Object>> ordersUpload(@RequestBody RequestOrdersDto requestOrdersDto) {
-        ordersService.saveOrders(requestOrdersDto);
+    public ResponseEntity<Response<Object>> ordersUpload(@RequestBody RequestOrdersDto requestOrdersDto, Authentication authentication) {
+        ordersService.saveOrders(requestOrdersDto, ((CustomUserDetails) authentication.getPrincipal()).getUser());
         Response response = Response.builder().message("주문 완료").data(null).build();
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
@@ -50,7 +51,7 @@ public class OrdersController {
     })
     @GetMapping("/orders")
     public ResponseEntity<Response<List<OrdersMapping>>> ordersList(Authentication authentication) {
-        List<OrdersMapping> orderList = ordersService.findAllOrders(authentication.getName());
+        List<OrdersMapping> orderList = ordersService.findAllOrders(((CustomUserDetails) authentication.getPrincipal()).getUser());
         Response response = Response.builder().message("주문 내역").data(orderList).build();
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }

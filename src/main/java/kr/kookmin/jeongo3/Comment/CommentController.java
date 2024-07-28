@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import kr.kookmin.jeongo3.Comment.Dto.RequestCommentDto;
 import kr.kookmin.jeongo3.Exception.ExceptionDto;
 import kr.kookmin.jeongo3.Common.Response;
+import kr.kookmin.jeongo3.User.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,7 +31,7 @@ public class CommentController {
     })
     @PostMapping("/comment")
     public ResponseEntity<Response<Object>> commentUpload(@RequestBody RequestCommentDto requestCommentDto, Authentication authentication) {
-        commentService.saveComment(requestCommentDto, authentication.getName());
+        commentService.saveComment(requestCommentDto, ((CustomUserDetails) authentication.getPrincipal()).getUser());
         Response response = Response.builder().message("댓글 저장").data(null).build();
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
@@ -45,7 +46,7 @@ public class CommentController {
     })
     @DeleteMapping("/comment")
     public ResponseEntity<Response<Object>> commentDelete(@RequestParam String commentId, Authentication authentication) {
-        commentService.deleteComment(commentId, authentication.getName());
+        commentService.deleteComment(commentId, ((CustomUserDetails) authentication.getPrincipal()).getUser());
         Response response = Response.builder().message("댓글 삭제").data(null).build();
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }

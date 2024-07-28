@@ -10,6 +10,7 @@ import kr.kookmin.jeongo3.DISC.Dto.DISCRequestDto;
 import kr.kookmin.jeongo3.DISC.Dto.DISCResponseDto;
 import kr.kookmin.jeongo3.Exception.ExceptionDto;
 import kr.kookmin.jeongo3.Common.Response;
+import kr.kookmin.jeongo3.User.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -36,7 +37,7 @@ public class DISCController {
     })
     @PostMapping("/DISC")
     public ResponseEntity<Response<DISCResponseDto>> DISCUpload(Authentication authentication, @RequestBody DISCRequestDto discRequestDto) {
-        DISCResponseDto discResponseDto = discService.saveDISC(discRequestDto ,authentication.getName());
+        DISCResponseDto discResponseDto = discService.saveDISC(discRequestDto ,((CustomUserDetails) authentication.getPrincipal()).getUser());
         Response response = Response.builder().message("DISC 테스트 결과 저장").data(discResponseDto).build();
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
@@ -49,7 +50,7 @@ public class DISCController {
     })
     @GetMapping("/DISC")
     public ResponseEntity<Response<DISCResponseDto>> DISCDetail(Authentication authentication) {
-        DISCResponseDto discResponseDto = discService.findDISC(authentication.getName());
+        DISCResponseDto discResponseDto = discService.findDISC(((CustomUserDetails) authentication.getPrincipal()).getUser());
         Response response = Response.builder().message("DISC 테스트 결과").data(discResponseDto).build();
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }

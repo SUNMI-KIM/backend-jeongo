@@ -12,6 +12,7 @@ import kr.kookmin.jeongo3.Post.Dto.RequestPostDto;
 import kr.kookmin.jeongo3.Post.Dto.ResponseHotPostDto;
 import kr.kookmin.jeongo3.Post.Dto.ResponsePostDto;
 import kr.kookmin.jeongo3.Common.Response;
+import kr.kookmin.jeongo3.User.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -37,7 +38,7 @@ public class PostController {
     })
     @org.springframework.web.bind.annotation.PostMapping("/post")
     public ResponseEntity<Response<String>> postUpload(@RequestBody RequestPostDto requestPostDto, Authentication authentication) {
-        String postId = postService.savePost(requestPostDto, authentication.getName());
+        String postId = postService.savePost(requestPostDto, ((CustomUserDetails) authentication.getPrincipal()).getUser());
         Response response = Response.builder().message("게시글 저장").data(postId).build();
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
@@ -50,7 +51,7 @@ public class PostController {
     })
     @DeleteMapping("/post")
     public ResponseEntity<Response<Object>> postDelete(@RequestParam String id, Authentication authentication) {
-        postService.deletePost(id, authentication.getName());
+        postService.deletePost(id, ((CustomUserDetails) authentication.getPrincipal()).getUser());
         Response response = Response.builder().message("게시글 삭제").data(null).build();
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
@@ -65,7 +66,7 @@ public class PostController {
     })
     @PatchMapping("/post")
     public ResponseEntity<Response<Object>> postModify(@RequestBody RequestPostDto requestPost, Authentication authentication) {
-        postService.updatePost(requestPost, authentication.getName());
+        postService.updatePost(requestPost, ((CustomUserDetails) authentication.getPrincipal()).getUser());
         Response response = Response.builder().message("게시글 수정").data(null).build();
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
@@ -80,7 +81,7 @@ public class PostController {
     })
     @GetMapping("/post")
     public ResponseEntity<Response<ResponsePostDto>> postDetails(@RequestParam String id, Authentication authentication) {
-        ResponsePostDto responsePostDto = postService.findPost(id, authentication.getName());
+        ResponsePostDto responsePostDto = postService.findPost(id, ((CustomUserDetails) authentication.getPrincipal()).getUser());
         Response response = Response.builder().message("게시글 상세 내용").data(responsePostDto).build();
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }

@@ -5,6 +5,5 @@ import lombok.Getter;
 @Getter
 public class RequestOrdersDto {
 
-    private String userId;
     private String itemId;
 }

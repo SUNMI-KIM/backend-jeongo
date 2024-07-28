@@ -13,6 +13,7 @@ import kr.kookmin.jeongo3.User.Dto.RequestUserDto;
 import kr.kookmin.jeongo3.User.Dto.RequestUserUpdateDto;
 import kr.kookmin.jeongo3.User.Dto.ResponseUserDto;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -23,6 +24,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @Tag(name = "User", description = "유저 관련 API")
+@Slf4j
 public class UserController {
 
     private final UserService userService;
@@ -76,7 +78,7 @@ public class UserController {
     })
     @GetMapping("/user")
     public ResponseEntity<Response<ResponseUserDto>> userDetails(Authentication authentication) {
-        ResponseUserDto responseUserDto = userService.findByIdUser(authentication.getName());
+        ResponseUserDto responseUserDto = userService.findByIdUser(((CustomUserDetails) authentication.getPrincipal()).getUser());
         Response response = Response.builder().message("유저 상세 정보").data(responseUserDto).build();
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
@@ -107,7 +109,7 @@ public class UserController {
     })
     @PutMapping("/user")
     public ResponseEntity<Response<Object>> userUpdate(Authentication authentication, @RequestBody RequestUserUpdateDto requestUserUpdateDto) {
-        userService.updateUser(authentication.getName(), requestUserUpdateDto);
+        userService.updateUser(((CustomUserDetails) authentication.getPrincipal()).getUser(), requestUserUpdateDto);
         Response response = Response.builder().message("유저 수정 성공").data(null).build();
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }

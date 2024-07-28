@@ -32,8 +32,7 @@ public class PostService {
     private final PostLikeRepository postLikeRepository;
     private final S3Service s3Service;
 
-    public String savePost(RequestPostDto requestPostDto, String userId) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new MyException(USER_NOT_FOUND));
+    public String savePost(RequestPostDto requestPostDto, User user) {
         Post post = requestPostDto.toEntity();
         post.setUser(user);
 
@@ -50,8 +49,8 @@ public class PostService {
         return post.getId();
     }
 
-    public void deletePost(String id, String userId) {
-        if (!postRepository.findById(id).orElseThrow(() -> new MyException(POST_NOT_FOUND)).getUser().getId().equals(userId)) {
+    public void deletePost(String id, User user) {
+        if (!postRepository.findById(id).orElseThrow(() -> new MyException(POST_NOT_FOUND)).getUser().getId().equals(user.getId())) {
             throw new MyException(ACCESS_DENIED);
         }
         postRepository.deleteById(id);
@@ -63,9 +62,9 @@ public class PostService {
     }
 
     @Transactional
-    public void updatePost(RequestPostDto requestPostDto, String userId) {
+    public void updatePost(RequestPostDto requestPostDto, User user) {
         Post post = postRepository.findById(requestPostDto.getId()).orElseThrow(() -> new MyException(POST_NOT_FOUND));
-        if (!post.getUser().getId().equals(userId)) {
+        if (!post.getUser().getId().equals(user.getId())) {
             throw new MyException(BAD_REQUEST);
         }
         post.setTitle(requestPostDto.getTitle());
@@ -84,10 +83,9 @@ public class PostService {
     }
 
     @Transactional
-    public ResponsePostDto findPost(String postId, String userId) {
+    public ResponsePostDto findPost(String postId, User user) {
         postRepository.updateViews(postId);
         Post post = postRepository.findById(postId).orElseThrow(() -> new MyException(POST_NOT_FOUND));
-        User user = userRepository.findById(userId).orElseThrow(() -> new MyException(USER_NOT_FOUND));
         ResponsePostDto responsePostDto = new ResponsePostDto(post);
         responsePostDto.setLike(postLikeRepository.existsByUserAndPost(user, post));
         responsePostDto.setLikeNumber(postLikeRepository.countByPost(post));

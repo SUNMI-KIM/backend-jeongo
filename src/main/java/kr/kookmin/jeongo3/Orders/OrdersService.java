@@ -26,8 +26,7 @@ public class OrdersService {
     private final OrdersRepository ordersRepository;
 
     @Transactional
-    public void saveOrders(RequestOrdersDto requestOrdersDto) {
-        User user = userRepository.findById(requestOrdersDto.getUserId()).orElseThrow(() -> new MyException(USER_NOT_FOUND));
+    public void saveOrders(RequestOrdersDto requestOrdersDto, User user) {
         Item item = itemRepository.findById(requestOrdersDto.getItemId()).orElseThrow(() -> new MyException(ITEM_NOT_FOUND));
 
         if (user.getPoint() - item.getPrice() < 0) {
@@ -39,8 +38,7 @@ public class OrdersService {
         ordersRepository.save(orders);
     }
 
-    public List<OrdersMapping> findAllOrders(String userId) { // 페이징 처리 해야하나? 고민
-        User user = userRepository.findById(userId).orElseThrow(() -> new MyException(USER_NOT_FOUND));
+    public List<OrdersMapping> findAllOrders(User user) { // 페이징 처리 해야하나? 고민
         return ordersRepository.findByUserOrderByTimeDesc(user);
     }
 

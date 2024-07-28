@@ -21,7 +21,6 @@ import static kr.kookmin.jeongo3.Exception.ErrorCode.USER_NOT_FOUND;
 @RequiredArgsConstructor
 public class OrdersService {
 
-    private final UserRepository userRepository;
     private final ItemRepository itemRepository;
     private final OrdersRepository ordersRepository;
 

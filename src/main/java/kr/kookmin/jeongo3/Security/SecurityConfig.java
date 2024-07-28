@@ -8,6 +8,8 @@ import kr.kookmin.jeongo3.Security.Jwt.JwtProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -56,7 +58,10 @@ public class SecurityConfig {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeHttpRequests()
-                .anyRequest().permitAll()
+                .requestMatchers(HttpMethod.POST, "/user").permitAll()
+                .requestMatchers("/login", "/user/validation", "/refresh", "/users").permitAll()
+                .requestMatchers("comment", "/user", "/user/report", "/post-like", "/DISC", "/DISC-headcount", "/post", "/posts", "/hot-post").hasAnyRole("UNIV", "HIGH", "ADMIN")
+                .anyRequest().denyAll()
                 .and()
                 .addFilterBefore(new JwtFilter(jwtProvider), UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling()

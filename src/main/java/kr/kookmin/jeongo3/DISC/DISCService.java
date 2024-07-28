@@ -21,7 +21,6 @@ import java.util.Map;
 @Slf4j
 public class DISCService {
 
-    private final UserRepository userRepository;
     private final DISCRepository discRepository;
 
     public DISCResponseDto findDISC(User user) {

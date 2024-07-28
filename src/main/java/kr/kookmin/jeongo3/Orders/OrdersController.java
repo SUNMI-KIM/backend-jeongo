@@ -28,7 +28,7 @@ public class OrdersController {
 
     private final OrdersService ordersService;
 
-    @Operation(summary = "글 올리기", description = "게시글 서비스 저장 기능")
+    @Operation(summary = "주문 하기", description = "주문 서비스 주문 기능")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "성공", useReturnTypeSchema = true),
             @ApiResponse(responseCode = "404", description = "유저나 상품을 찾을 수 없음", content = @Content(

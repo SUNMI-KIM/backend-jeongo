@@ -27,6 +27,8 @@ public class CommentController {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "성공", useReturnTypeSchema = true),
             @ApiResponse(responseCode = "404", description = "유저가 없거나 게시글을 찾을 수 없음", content = @Content(
+                    schema = @Schema(implementation = ExceptionDto.class))),
+            @ApiResponse(responseCode = "403", description = "권한이 없음", content = @Content(
                     schema = @Schema(implementation = ExceptionDto.class)))
     })
     @PostMapping("/comment")

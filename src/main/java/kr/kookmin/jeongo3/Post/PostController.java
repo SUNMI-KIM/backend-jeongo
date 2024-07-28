@@ -34,6 +34,8 @@ public class PostController {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "성공", useReturnTypeSchema = true),
             @ApiResponse(responseCode = "404", description = "유저를 찾을 수 없음", content = @Content(
+                    schema = @Schema(implementation = ExceptionDto.class))),
+            @ApiResponse(responseCode = "403", description = "권한이 없음", content = @Content(
                     schema = @Schema(implementation = ExceptionDto.class)))
     })
     @org.springframework.web.bind.annotation.PostMapping("/post")

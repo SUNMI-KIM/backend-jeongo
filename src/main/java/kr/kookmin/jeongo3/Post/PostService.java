@@ -2,6 +2,7 @@ package kr.kookmin.jeongo3.Post;
 
 import jakarta.transaction.Transactional;
 import kr.kookmin.jeongo3.Aws.S3Service;
+import kr.kookmin.jeongo3.Exception.ErrorCode;
 import kr.kookmin.jeongo3.Exception.MyException;
 import kr.kookmin.jeongo3.Post.Dto.PostMapping;
 import kr.kookmin.jeongo3.Post.Dto.RequestPostDto;
@@ -10,6 +11,7 @@ import kr.kookmin.jeongo3.Post.Dto.ResponsePostDto;
 import kr.kookmin.jeongo3.PostLike.PostLikeRepository;
 import kr.kookmin.jeongo3.User.User;
 import kr.kookmin.jeongo3.User.UserRepository;
+import kr.kookmin.jeongo3.User.UserRole;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -27,7 +29,6 @@ import static kr.kookmin.jeongo3.Exception.ErrorCode.*;
 @RequiredArgsConstructor
 public class PostService {
 
-    private final UserRepository userRepository;
     private final PostRepository postRepository;
     private final PostLikeRepository postLikeRepository;
     private final S3Service s3Service;
@@ -35,6 +36,10 @@ public class PostService {
     public String savePost(RequestPostDto requestPostDto, User user) {
         Post post = requestPostDto.toEntity();
         post.setUser(user);
+
+        if (post.getPostType() == PostType.QNA)
+            if (user.getUserRole() == UserRole.UNIV)
+                throw new MyException(ACCESS_DENIED);
 
         if (requestPostDto.getImage() != null) {
             String fileName = UUID.randomUUID() + requestPostDto.getImage().getOriginalFilename();

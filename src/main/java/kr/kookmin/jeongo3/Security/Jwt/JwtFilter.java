@@ -8,6 +8,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import kr.kookmin.jeongo3.Exception.ErrorCode;
+import kr.kookmin.jeongo3.Exception.MyException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
@@ -35,6 +36,8 @@ public class JwtFilter extends OncePerRequestFilter {
             request.setAttribute("exception", ErrorCode.WRONG_TOKEN.getMessage());
         } catch (ExpiredJwtException e) {
             request.setAttribute("exception", ErrorCode.EXPIRED_TOKEN.getMessage());
+        } catch (MyException e) {
+            request.setAttribute("exception", e.getErrorCode().getMessage());
         } catch (Exception e) {
             log.error("================================================");
             log.error("JwtFilter - doFilterInternal() 오류발생");

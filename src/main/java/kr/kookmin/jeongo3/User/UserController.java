@@ -7,7 +7,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import kr.kookmin.jeongo3.Exception.ExceptionDto;
-import kr.kookmin.jeongo3.Response;
+import kr.kookmin.jeongo3.Common.Response;
 import kr.kookmin.jeongo3.Security.Jwt.Dto.TokenDto;
 import kr.kookmin.jeongo3.User.Dto.RequestUserDto;
 import kr.kookmin.jeongo3.User.Dto.RequestUserUpdateDto;
@@ -37,6 +37,18 @@ public class UserController {
     public ResponseEntity<Response<Object>> userRegister(@RequestBody RequestUserDto requestUserDto) {
         userService.saveUser(requestUserDto);
         Response response = Response.builder().message("회원가입 성공").data(null).build();
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    @Operation(summary = "아이디 중복 체크", description = "유저 서비스 아이디 중복 확인 기능")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "성공", useReturnTypeSchema = true),
+            @ApiResponse(responseCode = "400", description = "유저 아이디 중복으로 인한 실패", content = @Content(
+                    schema = @Schema(implementation = ExceptionDto.class)))
+    })
+    @GetMapping("/user/validation")
+    public ResponseEntity<Response<Boolean>> userValidate(@RequestParam String loginId) {
+        Response response = Response.builder().message("중복 아이디 없음").data(userService.validateUser(loginId)).build();
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 

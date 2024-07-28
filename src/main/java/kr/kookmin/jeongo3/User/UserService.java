@@ -23,7 +23,6 @@ import static kr.kookmin.jeongo3.Exception.ErrorCode.*;
 
 @Service
 @RequiredArgsConstructor
-@Slf4j
 public class UserService {
 
     private final UserRepository userRepository;
@@ -50,7 +49,14 @@ public class UserService {
             responseUserDto.setImage(s3Service.getPresignedURL(user.getImage()));
         }
         return responseUserDto;
-}
+    }
+
+    public boolean validateUser(String loginId) {
+        if (userRepository.existsByLoginId(loginId)) {
+            throw new MyException(DUPLICATED_USER_ID);
+        }
+        return true;
+    }
 
     public void saveUser(RequestUserDto requestUserDto) {
         if (userRepository.existsByLoginId(requestUserDto.getLoginId())) {
@@ -109,7 +115,8 @@ public class UserService {
     public void updateUser(String id, RequestUserUpdateDto requestUserUpdateDto) {
         User user = userRepository.findById(id).orElseThrow(() -> new MyException(USER_NOT_FOUND));
         user.setName(requestUserUpdateDto.getName());
-        user.setUniv(user.getUniv());
+        user.setUniv(requestUserUpdateDto.getUniv());
+        user.setDepartment(requestUserUpdateDto.getDepartment());
 
         if (requestUserUpdateDto.getImage() != null) {
             String fileName = UUID.randomUUID() + requestUserUpdateDto.getImage().getOriginalFilename();
@@ -120,10 +127,6 @@ public class UserService {
             } catch (IOException e) {
 
             }
-        }
-
-        if (requestUserUpdateDto.getPassword() != null) {
-            user.setPassword(passwordEncoder.encode(requestUserUpdateDto.getPassword()));
         }
     }
 }

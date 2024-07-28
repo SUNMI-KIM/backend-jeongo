@@ -24,8 +24,8 @@ public class JwtProvider {
 
     @Value("${secret}")
     private String secretKey;
-    private final long accessTokenExp = 1000L * 60 * 60; // 1시간
-    private final long refreshTokenExp = 1000L * 60 * 60 * 24 * 7; // 7일
+    private final long accessTokenExp = 1000L * 60 * 60 * 24 * 10; // 1시간
+    private final long refreshTokenExp = 1000L * 60 * 60 * 24 * 10; // 7일
 
     private final CustomUserDetailsService userDetailsService;
 

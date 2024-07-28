@@ -1,5 +1,6 @@
 package kr.kookmin.jeongo3.DISC;
 
+import jakarta.transaction.Transactional;
 import kr.kookmin.jeongo3.DISC.Dto.DISCRequestDto;
 import kr.kookmin.jeongo3.DISC.Dto.DISCResponseDto;
 import kr.kookmin.jeongo3.Exception.ErrorCode;
@@ -30,8 +31,10 @@ public class DISCService {
         return DISCResponseDto.builder().sameDISCNum(countByDISC).discCode(disc.getDiscCode()).build();
     }
 
+    @Transactional
     public DISCResponseDto saveDISC(DISCRequestDto discRequestDto, String userId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new MyException(ErrorCode.USER_NOT_FOUND));
+        discRepository.deleteByUser(user);
         DISCCode discCode = elicitDISC(discRequestDto);
         DISC disc = DISC.builder().user(user).discCode(discCode).build();
         discRepository.save(disc);

@@ -13,4 +13,6 @@ public interface DISCRepository extends JpaRepository<DISC, String> {
 
     public long countByDiscCode(DISCCode discCode);
 
+    public void deleteByUser(User user);
+
 }

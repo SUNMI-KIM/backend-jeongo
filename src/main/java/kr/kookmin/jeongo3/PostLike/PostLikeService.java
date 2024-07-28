@@ -30,7 +30,7 @@ public class PostLikeService {
     public void deletePostLike(String postId, String userId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new MyException(USER_NOT_FOUND));
         Post post = postRepository.findById(postId).orElseThrow(() -> new MyException(POST_NOT_FOUND));
-        PostLike postLike = postLikeRepository.findByUserAndAndPost(user, post).orElseThrow(() -> new MyException(POSTLIKE_NOT_FOUND));
+        PostLike postLike = postLikeRepository.findByUserAndPost(user, post).orElseThrow(() -> new MyException(POSTLIKE_NOT_FOUND));
         if (!postLike.getUser().getId().equals(userId)) {
             throw new MyException(BAD_REQUEST);
         }

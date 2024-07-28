@@ -1,4 +1,4 @@
-package kr.kookmin.jeongo3;
+package kr.kookmin.jeongo3.Common;
 
 import lombok.Builder;
 import lombok.Getter;

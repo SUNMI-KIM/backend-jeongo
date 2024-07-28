@@ -5,11 +5,13 @@ import kr.kookmin.jeongo3.Aws.S3Service;
 import kr.kookmin.jeongo3.Exception.MyException;
 import kr.kookmin.jeongo3.Post.Dto.PostMapping;
 import kr.kookmin.jeongo3.Post.Dto.RequestPostDto;
+import kr.kookmin.jeongo3.Post.Dto.ResponseHotPostDto;
 import kr.kookmin.jeongo3.Post.Dto.ResponsePostDto;
 import kr.kookmin.jeongo3.PostLike.PostLikeRepository;
 import kr.kookmin.jeongo3.User.User;
 import kr.kookmin.jeongo3.User.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
@@ -30,7 +32,7 @@ public class PostService {
     private final PostLikeRepository postLikeRepository;
     private final S3Service s3Service;
 
-    public void savePost(RequestPostDto requestPostDto, String userId) {
+    public String savePost(RequestPostDto requestPostDto, String userId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new MyException(USER_NOT_FOUND));
         Post post = requestPostDto.toEntity();
         post.setUser(user);
@@ -45,6 +47,7 @@ public class PostService {
             }
         }
         postRepository.save(post);
+        return post.getId();
     }
 
     public void deletePost(String id, String userId) {
@@ -87,7 +90,7 @@ public class PostService {
         User user = userRepository.findById(userId).orElseThrow(() -> new MyException(USER_NOT_FOUND));
         ResponsePostDto responsePostDto = new ResponsePostDto(post);
         responsePostDto.setLike(postLikeRepository.existsByUserAndPost(user, post));
-        responsePostDto.setLikeNumber(postLikeRepository.countByUserAndPost(user, post));
+        responsePostDto.setLikeNumber(postLikeRepository.countByPost(post));
 
         if (post.getImage() != null) {
             responsePostDto.setImage(s3Service.getPresignedURL(post.getImage()));
@@ -95,7 +98,9 @@ public class PostService {
         return responsePostDto;
     }
 
-    public PostMapping findHotPost(PostType postType) {
-        return postRepository.findFirstHotPost(postType);
+    public ResponseHotPostDto findHotPost(PostType postType) {
+        Post post = postRepository.findFirstHotPost(postType).orElseThrow(() -> new MyException(POST_NOT_FOUND));
+        int likeNumber = postLikeRepository.countByPost(post);
+        return new ResponseHotPostDto(post, likeNumber);
     }
 }

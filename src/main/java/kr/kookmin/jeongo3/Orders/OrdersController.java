@@ -1,5 +1,6 @@
 package kr.kookmin.jeongo3.Orders;
 
+import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -9,7 +10,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import kr.kookmin.jeongo3.Exception.ExceptionDto;
 import kr.kookmin.jeongo3.Orders.Dto.OrdersMapping;
 import kr.kookmin.jeongo3.Orders.Dto.RequestOrdersDto;
-import kr.kookmin.jeongo3.Response;
+import kr.kookmin.jeongo3.Common.Response;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Hidden
 @RestController
 @RequiredArgsConstructor
 @Tag(name = "Orders", description = "주문 관련 API")

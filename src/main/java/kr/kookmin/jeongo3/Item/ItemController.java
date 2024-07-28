@@ -1,5 +1,6 @@
 package kr.kookmin.jeongo3.Item;
 
+import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -10,7 +11,7 @@ import kr.kookmin.jeongo3.Exception.ExceptionDto;
 import kr.kookmin.jeongo3.Item.Dto.RequestItemDto;
 import kr.kookmin.jeongo3.Item.Dto.RequestItemModifyDto;
 import kr.kookmin.jeongo3.Item.Dto.ResponseItemDto;
-import kr.kookmin.jeongo3.Response;
+import kr.kookmin.jeongo3.Common.Response;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Hidden
 @RestController
 @RequiredArgsConstructor
 @Tag(name = "Item", description = "상품 관련 API")

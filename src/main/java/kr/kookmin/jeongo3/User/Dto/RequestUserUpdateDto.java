@@ -10,9 +10,9 @@ public class RequestUserUpdateDto {
 
     private String name;
 
-    private String password;
-
     private String univ; // 희망 대학, 재학 대학
+
+    private String department;
 
     private MultipartFile image;
 

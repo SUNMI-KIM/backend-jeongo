@@ -9,7 +9,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import kr.kookmin.jeongo3.DISC.Dto.DISCRequestDto;
 import kr.kookmin.jeongo3.DISC.Dto.DISCResponseDto;
 import kr.kookmin.jeongo3.Exception.ExceptionDto;
-import kr.kookmin.jeongo3.Response;
+import kr.kookmin.jeongo3.Common.Response;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

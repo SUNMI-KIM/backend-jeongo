@@ -9,8 +9,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import kr.kookmin.jeongo3.Exception.ExceptionDto;
 import kr.kookmin.jeongo3.Post.Dto.PostMapping;
 import kr.kookmin.jeongo3.Post.Dto.RequestPostDto;
+import kr.kookmin.jeongo3.Post.Dto.ResponseHotPostDto;
 import kr.kookmin.jeongo3.Post.Dto.ResponsePostDto;
-import kr.kookmin.jeongo3.Response;
+import kr.kookmin.jeongo3.Common.Response;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -35,9 +36,9 @@ public class PostController {
                     schema = @Schema(implementation = ExceptionDto.class)))
     })
     @org.springframework.web.bind.annotation.PostMapping("/post")
-    public ResponseEntity<Response<Object>> postUpload(@RequestBody RequestPostDto requestPostDto, Authentication authentication) {
-        postService.savePost(requestPostDto, authentication.getName());
-        Response response = Response.builder().message("게시글 저장").data(null).build();
+    public ResponseEntity<Response<String>> postUpload(@RequestBody RequestPostDto requestPostDto, Authentication authentication) {
+        String postId = postService.savePost(requestPostDto, authentication.getName());
+        Response response = Response.builder().message("게시글 저장").data(postId).build();
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
@@ -100,8 +101,8 @@ public class PostController {
             @ApiResponse(responseCode = "200", description = "성공", useReturnTypeSchema = true)
     })
     @GetMapping("/hot-post")
-    public ResponseEntity<Response<PostMapping>> postHotFind(PostType postType) { // 함수 이름 적당한걸로 바꾸기
-        PostMapping post = postService.findHotPost(postType);
+    public ResponseEntity<Response<ResponseHotPostDto>> postHotFind(PostType postType) { // 함수 이름 적당한걸로 바꾸기
+        ResponseHotPostDto post = postService.findHotPost(postType);
         Response response = Response.builder().message("핫 게시글").data(post).build();
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
